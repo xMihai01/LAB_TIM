@@ -17,6 +17,10 @@ public class UserEntity {
     private String username;
 
     @Basic
+    @Column(name = "email")
+    private String email;
+
+    @Basic
     @Column(name = "password")
     private String password;
 

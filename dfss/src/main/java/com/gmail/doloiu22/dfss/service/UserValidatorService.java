@@ -29,14 +29,18 @@ public class UserValidatorService implements Validator {
         */
 
         String passwordRegexPattern = "^(?:(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*)[^\s]{8,}$";
+        String emailRegexPattern = "^[a-zA-Z0-9_.±]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$";
 
         Boolean isValidPassword = user.getPassword().matches(passwordRegexPattern);
         Boolean arePasswordsTheSame = user.getPassword().equals(user.getRepeatPassword());
+        Boolean isEmailValid = user.getEmail().matches(emailRegexPattern);
 
         if(!isValidPassword)
             errors.rejectValue("password", "user.isValidPassword");
         if(!arePasswordsTheSame)
             errors.rejectValue("repeatPassword", "user.isPasswordDifferent");
+        if (!isEmailValid)
+            errors.rejectValue("invalidEmail", "user.isEmailValid");
 
     }
 }

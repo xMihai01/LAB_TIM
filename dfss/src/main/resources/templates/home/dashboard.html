@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home: Dashboard</title>
+</head>
+<body>
+<h1>Upload file test</h1>
+<form method="POST" th:action="@{/home/uploadFile}" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+</form>
+</body>
+</html>
