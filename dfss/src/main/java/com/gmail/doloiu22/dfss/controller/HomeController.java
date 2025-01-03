@@ -1,27 +1,28 @@
 package com.gmail.doloiu22.dfss.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
 
 @Controller
 @RequestMapping("/home")
 public class HomeController {
 
-    private final String uploadDir = "C:\\Users\\mihai\\Desktop\\dfssUploadingTests\\";
+    private final String centralNodeUrl = "http://localhost:8082/upload";
 
     @GetMapping
     public String open(Model model, Authentication authentication){
@@ -30,20 +31,35 @@ public class HomeController {
     }
 
     @PostMapping("/uploadFile")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return new ResponseEntity<>("Please select a file to upload.", HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
         try {
-            Path path = Paths.get(uploadDir + file.getOriginalFilename());
-            Files.createDirectories(path.getParent());
-            Files.write(path, file.getBytes());
+            File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
+            file.transferTo(convFile);
 
-            return new ResponseEntity<>("File uploaded successfully: " + file.getOriginalFilename(), HttpStatus.OK);
-        } catch (IOException e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("file", new FileSystemResource(convFile));
+
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<String> response = restTemplate.exchange( // TODO: use List<String> for multiple servers
+                    centralNodeUrl,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class // and new ParameterizedTypeReference<List<String>>() {}
+            );
+
+            convFile.delete();
+
+            return response;
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Failed to upload the file.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during file upload: " + e.getMessage());
         }
+
     }
 }
