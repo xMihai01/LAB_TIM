@@ -10,5 +10,26 @@
     <input type="file" name="file" />
     <button type="submit">Upload</button>
 </form>
+
+
+<table class="min-w-full bg-white border border-gray-300 shadow-md rounded-md overflow-hidden">
+    <thead>
+    <tr class="bg-indigo-500 text-white">
+        <th class="py-2 px-4">ID</th>
+        <th class="py-2 px-4">FileName</th>
+        <th class="py-2 px-4">Author</th>
+        <th class="py-2 px-4">Date published</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="storedFile : ${storedFiles}" class="even:bg-gray-50 odd:bg-white">
+        <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
+        <td class="py-2 px-4" th:text="${storedFile.id}" style="text-align: center;"></td>
+        <td class="py-2 px-4" th:text="${storedFile.fileName}" style="text-align: center;"></td>
+        <td class="py-2 px-4" th:text="${sessionItem.author}" style="text-align: center;"></td>
+        <td class="py-2 px-4" th:text="${sessionItem.datePublished}" style="text-align: center;"></td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

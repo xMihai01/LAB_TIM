@@ -1,5 +1,8 @@
 package com.gmail.doloiu22.dfss.controller;
 
+import com.gmail.doloiu22.dfss.model.StoredFileEntity;
+import com.gmail.doloiu22.dfss.service.StoredFileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -24,8 +27,15 @@ public class HomeController {
 
     private final String centralNodeUrl = "http://localhost:8082/upload";
 
+    @Autowired
+    private StoredFileService storedFileService;
+
     @GetMapping
     public String open(Model model, Authentication authentication){
+
+        List<StoredFileEntity> listOfStoredFiles = storedFileService.getAllFiles();
+
+        model.addAttribute("storedFiles", listOfStoredFiles);
 
         return "home/dashboard";
     }
