@@ -1,14 +1,15 @@
 package com.gmail.doloiu22.dfss.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,5 +36,16 @@ public class StorageNodeController {
             e.printStackTrace();
             return new ResponseEntity<>("Failed to upload the file.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/downloadFile/{fileName}")
+    public InputStreamResource downloadFile(HttpServletResponse response, @PathVariable(name="fileName") String fileName) throws IOException {
+
+        String filePath = uploadDir + fileName;
+
+        response.setContentType("application/file");
+        response.setHeader("Content-Disposition","attachment; filename=" + fileName);
+
+        return new InputStreamResource(new FileInputStream(filePath));
     }
 }

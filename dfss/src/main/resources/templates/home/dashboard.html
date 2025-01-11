@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Home: Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
 <h1>Upload file test</h1>
@@ -19,6 +20,7 @@
         <th class="py-2 px-4">FileName</th>
         <th class="py-2 px-4">Author</th>
         <th class="py-2 px-4">Date published</th>
+        <th class="py-2 px-4"></th>
     </tr>
     </thead>
     <tbody>
@@ -26,8 +28,14 @@
         <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
         <td class="py-2 px-4" th:text="${storedFile.id}" style="text-align: center;"></td>
         <td class="py-2 px-4" th:text="${storedFile.fileName}" style="text-align: center;"></td>
-        <td class="py-2 px-4" th:text="${sessionItem.author}" style="text-align: center;"></td>
-        <td class="py-2 px-4" th:text="${sessionItem.datePublished}" style="text-align: center;"></td>
+        <td class="py-2 px-4" th:text="${storedFile.author}" style="text-align: center;"></td>
+        <td class="py-2 px-4" th:text="${storedFile.datePublished}" style="text-align: center;"></td>
+        <form th:action="@{/home/downloadFile}" th:method="get">
+            <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
+            <td class="py-2 px-4" style="text-align: center;">
+                <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 focus:outline-none" type="submit">Download</button>
+            </td>
+        </form>
     </tr>
     </tbody>
 </table>

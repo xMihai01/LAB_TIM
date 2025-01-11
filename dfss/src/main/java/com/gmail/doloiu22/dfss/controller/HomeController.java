@@ -2,9 +2,10 @@ package com.gmail.doloiu22.dfss.controller;
 
 import com.gmail.doloiu22.dfss.model.StoredFileEntity;
 import com.gmail.doloiu22.dfss.service.StoredFileService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,15 +18,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
+import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/home")
 public class HomeController {
 
-    private final String centralNodeUrl = "http://localhost:8082/upload";
+    private final String centralNodeUrl = "http://localhost:8081/upload";
+    private final String centralNodeHttp = "http://localhost:8081";
+    private final String centralNodeUrlDownload = "/downloadFile/{fileName}";
+    private String userName = "unknown";
 
     @Autowired
     private StoredFileService storedFileService;
@@ -36,6 +44,7 @@ public class HomeController {
         List<StoredFileEntity> listOfStoredFiles = storedFileService.getAllFiles();
 
         model.addAttribute("storedFiles", listOfStoredFiles);
+        userName = authentication.getName();
 
         return "home/dashboard";
     }
@@ -63,6 +72,14 @@ public class HomeController {
                     String.class // and new ParameterizedTypeReference<List<String>>() {}
             );
 
+            StoredFileEntity storedFileEntity = new StoredFileEntity();
+            storedFileEntity.setFileName(file.getOriginalFilename());
+            storedFileEntity.setAuthor(userName);
+            storedFileEntity.setPrivate(false);
+            storedFileEntity.setDatePublished(LocalDateTime.now());
+            storedFileEntity.setLocation("testServerUpload/" + file.getOriginalFilename());
+            storedFileService.addFile(storedFileEntity);
+
             convFile.delete();
 
             return response;
@@ -71,5 +88,26 @@ public class HomeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during file upload: " + e.getMessage());
         }
 
+    }
+
+    @GetMapping("/downloadFile")
+    public ResponseEntity<Resource> downloadFile(@RequestParam("storedFileID") Long fileID, HttpServletResponse response) {
+
+        // TODO: Check if Optional is null or not (if file was found in the db)
+
+        Optional<StoredFileEntity> optionalFile = storedFileService.findByID(fileID);
+
+        RestTemplate restTemplate = new RestTemplate();
+        URI url = UriComponentsBuilder.fromHttpUrl(centralNodeHttp)
+                .path(centralNodeUrlDownload)
+                .buildAndExpand(optionalFile.get().getFileName())
+                .toUri();
+
+        ResponseEntity<Resource> res = restTemplate.getForEntity(url, Resource.class);
+        String fileName = optionalFile.get().getFileName();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(res.getBody());
     }
 }
