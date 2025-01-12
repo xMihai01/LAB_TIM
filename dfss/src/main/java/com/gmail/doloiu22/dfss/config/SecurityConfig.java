@@ -29,6 +29,7 @@ public class SecurityConfig{
                         .permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/home/**").hasAuthority("AUTH")
+                        .requestMatchers("/uploads/**").hasAuthority("AUTH")
                         .requestMatchers("/images/public/**").permitAll()
                         .requestMatchers("/*")
                         .authenticated()

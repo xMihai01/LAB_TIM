@@ -6,12 +6,9 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-<h1>Upload file test</h1>
-<form method="POST" th:action="@{/home/uploadFile}" enctype="multipart/form-data">
-    <input type="file" name="file" />
-    <button type="submit">Upload</button>
-</form>
 
+<nav class="relative bg-white border-b-2 border-gray-300 text-gray-900">
+    <div th:replace="fragments/mainHeader"></div>
 
 <table class="min-w-full bg-white border border-gray-300 shadow-md rounded-md overflow-hidden">
     <thead>

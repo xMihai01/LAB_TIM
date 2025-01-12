@@ -27,5 +27,6 @@ public class StoredFileService {
     public void addFile(StoredFileEntity storedFileEntity) {
         storedFileRepository.save(storedFileEntity);
     }
+    public void removeFile(StoredFileEntity storedFileEntity) {storedFileRepository.delete(storedFileEntity);}
 
 }
