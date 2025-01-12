@@ -53,7 +53,7 @@
 
 <div class="form-container">
     <h1 class="form-title">Upload a file</h1>
-    <form method="POST" action="/uploads/uploadFile" enctype="multipart/form-data">
+    <form th:method="post" th:action="@{/uploads/uploadFile}" enctype="multipart/form-data">
         <div class="mb-4">
             <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="file" name="file" />
         </div>
@@ -79,14 +79,14 @@
             <td class="py-2 px-4" th:text="${storedFile.fileName}"></td>
             <td class="py-2 px-4" th:text="${storedFile.datePublished}"></td>
             <td class="py-2 px-4">
-                <form th:action="@{/uploads/changePrivacy}" th:method="get">
+                <form th:action="@{/uploads/changePrivacy}" th:method="patch">
                     <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
                     <button th:class="${!storedFile.isPrivate ? 'bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600 focus:outline-none' : 'bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none'}" type="submit" th:text="${!storedFile.isPrivate ? 'Make PUBLIC' : 'Make PRIVATE'}"></button>
                 </form>
             </td>
             <td class="py-2 px-4">
                 <form th:action="@{/uploads/deleteFile}" th:method="get">
-                    <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
+                    <input type="hidden" name="fileID" th:value="${storedFile.id}" />
                     <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none" type="submit">DELETE</button>
                 </form>
             </td>

@@ -46,6 +46,7 @@ public class HomeController {
     public ResponseEntity<Resource> downloadFile(@RequestParam("storedFileID") Long fileID, HttpServletResponse response) {
 
         // TODO: Check if Optional is null or not (if file was found in the db)
+        // TODO: Change parameter in central node from String fileName to Long fileID
 
         Optional<StoredFileEntity> optionalFile = storedFileService.findByID(fileID);
 

@@ -6,6 +6,9 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,6 +63,22 @@ public class CentralNodeController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(response.getBody());
+    }
+
+    @DeleteMapping("/deleteFile/{fileName}")
+    public ResponseEntity<?> deleteFile(@PathVariable("fileName") String fileName) {
+        String storageNodeUrl = "http://localhost:8082" + "/deleteFile/" + fileName;
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            restTemplate.delete(storageNodeUrl);
+            return ResponseEntity.ok("File " + fileName + " deleted successfully.");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        } catch (ResourceAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error connecting to storage service.");
+        }
     }
 
 }

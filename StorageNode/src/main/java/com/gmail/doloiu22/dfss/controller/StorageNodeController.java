@@ -48,4 +48,20 @@ public class StorageNodeController {
 
         return new InputStreamResource(new FileInputStream(filePath));
     }
+
+    @DeleteMapping(value = "/deleteFile/{fileName}")
+    public ResponseEntity<?> deleteFile(@PathVariable(name = "fileName") String fileName){
+        String filePath = uploadDir + fileName;
+        File file = new File(filePath);
+
+        if (file.exists()) {
+            if (file.delete()) {
+                return ResponseEntity.ok().body("Successfully deleted file!");
+            } else {
+                return ResponseEntity.internalServerError().body("Error deleting file! Could not delete file from the filesystem.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error deleting file! File not found.");
+        }
+    }
 }

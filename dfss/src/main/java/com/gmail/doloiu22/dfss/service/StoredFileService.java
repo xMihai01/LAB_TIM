@@ -23,6 +23,7 @@ public class StoredFileService {
     public List<StoredFileEntity> getAllFiles() {
         return storedFileRepository.findAll();
     }
+    public List<StoredFileEntity> getAllFilesByAuthor(String author) {return storedFileRepository.findAllByAuthor(author);}
 
     public void addFile(StoredFileEntity storedFileEntity) {
         storedFileRepository.save(storedFileEntity);
