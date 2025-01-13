@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload File Test</title>
+    <title>DFSS: Uploads</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         body {
@@ -69,6 +69,7 @@
             <th class="py-2 px-4">FileName</th>
             <th class="py-2 px-4">Date Published</th>
             <th class="py-2 px-4">Privacy</th>
+            <th class="py-2 px-4">Manage Access</th>
             <th class="py-2 px-4"></th>
         </tr>
         </thead>
@@ -77,11 +78,17 @@
             <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
             <td class="py-2 px-4" th:text="${storedFile.id}"></td>
             <td class="py-2 px-4" th:text="${storedFile.fileName}"></td>
-            <td class="py-2 px-4" th:text="${storedFile.datePublished}"></td>
+            <td class="py-2 px-4" th:text="${storedFile.getDatePublishedAsString()}"></td>
             <td class="py-2 px-4">
                 <form th:action="@{/uploads/changePrivacy}" th:method="patch">
-                    <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
-                    <button th:class="${!storedFile.isPrivate ? 'bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600 focus:outline-none' : 'bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none'}" type="submit" th:text="${!storedFile.isPrivate ? 'Make PUBLIC' : 'Make PRIVATE'}"></button>
+                    <input type="hidden" name="fileID" th:value="${storedFile.id}" />
+                    <button th:class="${storedFile.isPrivate ? 'bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600 focus:outline-none' : 'bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none'}" type="submit" th:text="${storedFile.isPrivate ? 'Make PUBLIC' : 'Make PRIVATE'}"></button>
+                </form>
+            </td>
+            <td class="py-2 px-4">
+                <form th:action="@{/uploads/manageFileAccess}" th:method="get">
+                    <input type="hidden" name="fileID" th:value="${storedFile.id}" />
+                    <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 focus:outline-none" type="submit">Manage File</button>
                 </form>
             </td>
             <td class="py-2 px-4">

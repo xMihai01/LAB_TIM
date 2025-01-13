@@ -26,7 +26,7 @@
         <td class="py-2 px-4" th:text="${storedFile.id}" style="text-align: center;"></td>
         <td class="py-2 px-4" th:text="${storedFile.fileName}" style="text-align: center;"></td>
         <td class="py-2 px-4" th:text="${storedFile.author}" style="text-align: center;"></td>
-        <td class="py-2 px-4" th:text="${storedFile.datePublished}" style="text-align: center;"></td>
+        <td class="py-2 px-4" th:text="${storedFile.getDatePublishedAsString()}" style="text-align: center;"></td>
         <form th:action="@{/home/downloadFile}" th:method="get">
             <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
             <td class="py-2 px-4" style="text-align: center;">

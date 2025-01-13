@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFSS: Manage File</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            padding: 2rem;
+        }
+        .form-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+        }
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: center;
+            padding: 0.5rem;
+        }
+        th {
+            background-color: #4f46e5; /* Indio-500 */
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f3f4f6; /* Gray-50 */
+        }
+    </style>
+</head>
+<body>
+
+<nav class="relative bg-white border-b-2 border-gray-300 text-gray-900">
+    <div th:replace="fragments/mainHeader"></div>
+
+    <div class="form-container">
+        <h1 class="form-title">Enter the username of the user you would like to give access to:</h1>
+        <form th:method="post" th:action="@{/uploads/manageFileAccess/allowAccess}" enctype="multipart/form-data">
+            <div class="mb-4">
+                <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="text" name="text" placeholder="Username to allow access" />
+            </div>
+            <button class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table class="min-w-full bg-white border border-gray-300 shadow-md rounded-md">
+            <thead>
+            <tr>
+                <th class="py-2 px-4">ID</th>
+                <th class="py-2 px-4">Username</th>
+                <th class="py-2 px-4">Revoke Access</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <input type="hidden" name="userID" th:value="${user.id}" />
+                <td class="py-2 px-4" th:text="${user.id}"></td>
+                <td class="py-2 px-4" th:text="${user.username}"></td>
+                <td class="py-2 px-4">
+                    <form th:action="@{/uploads/manageFileAccess/revokeAccess}" th:method="get">
+                        <input type="hidden" name="userID" th:value="${user.id}" />
+                        <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none" type="submit">Revoke Access</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

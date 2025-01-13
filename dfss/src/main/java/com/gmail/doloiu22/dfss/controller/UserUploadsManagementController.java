@@ -3,6 +3,7 @@ package com.gmail.doloiu22.dfss.controller;
 import com.gmail.doloiu22.dfss.model.StoredFileEntity;
 import com.gmail.doloiu22.dfss.service.StoredFileService;
 import com.gmail.doloiu22.dfss.service.UserService;
+import com.gmail.doloiu22.dfss.util.ValidationsUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -32,10 +33,12 @@ public class UserUploadsManagementController {
 
     private final StoredFileService storedFileService;
     private final UserService userService;
+    private final ValidationsUtil validationsUtil;
 
     public UserUploadsManagementController(StoredFileService storedFileService, UserService userService) {
         this.storedFileService = storedFileService;
         this.userService = userService;
+        validationsUtil= new ValidationsUtil(userService, storedFileService);
     }
 
 
@@ -98,12 +101,9 @@ public class UserUploadsManagementController {
         if (storedFile.isEmpty())
             return "error"; // TODO: Change error; file does not exist;
         String fileName = storedFile.get().getFileName();
-        String author = storedFile.get().getAuthor();
 
-        if (!userService.findByUsername(userName).get().getUsername().equals(userService.findByUsername(author).get().getUsername())) {
-            // not allowed to delete; logged user is not the author
-            return "error"; // TODO: Change error; logged user does not have permission to delete file
-        }
+        if (!validationsUtil.isUserTheAuthor(userName, storedFile.get()))
+            return "error"; // TODO: Change error; user is not the author;
 
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -130,9 +130,28 @@ public class UserUploadsManagementController {
         }
     }
 
+
     @GetMapping("/deleteFile")
     public String deleteFileButtonPressed(@RequestParam("fileID") Long fileID) {
         return "redirect:/uploads/deleteFile/" + fileID.toString();
+    }
+
+    @GetMapping("/manageFileAccess")
+    public String manageFileButtonPressed(@RequestParam("fileID") Long fileID) {
+        return "redirect:/uploads/manageFileAccess/" + fileID.toString();
+    }
+
+    @PatchMapping("/changePrivacy")
+    public String changePrivacyButtonPressed(@RequestParam("fileID") Long fileID) {
+        Optional<StoredFileEntity> storedFile = storedFileService.findByID(fileID);
+
+        if (storedFile.isEmpty())
+            return "error";
+
+        storedFile.get().setPrivate(!storedFile.get().isPrivate());
+        storedFileService.update(storedFile.get());
+
+        return "redirect:/uploads";
     }
 
 }

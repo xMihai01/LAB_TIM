@@ -34,7 +34,7 @@ public class HomeController {
     @GetMapping
     public String open(Model model, Authentication authentication){
 
-        List<StoredFileEntity> listOfStoredFiles = storedFileService.getAllFiles();
+        List<StoredFileEntity> listOfStoredFiles = storedFileService.getAllFilesByPrivacy(false);
 
         model.addAttribute("storedFiles", listOfStoredFiles);
         userName = authentication.getName();
