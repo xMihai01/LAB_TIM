@@ -72,7 +72,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public UserEntity findById(Long userId) {
-        return userRepository.findById(userId).get();
+    public Optional<UserEntity> findById(Long userId) {
+        return userRepository.findById(userId);
     }
 }

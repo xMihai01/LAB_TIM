@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home: Private Uploads</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="relative bg-white border-b-2 border-gray-300 text-gray-900">
+    <div th:replace="fragments/mainHeader"></div>
+
+    <div class="flex justify-center my-4">
+        <a href="/home" class="bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 focus:outline-none">
+            Go to PUBLIC Uploads
+        </a>
+    </div>
+
+    <table class="min-w-full bg-white border border-gray-300 shadow-md rounded-md overflow-hidden">
+        <thead>
+        <tr class="bg-indigo-500 text-white">
+            <th class="py-2 px-4">ID</th>
+            <th class="py-2 px-4">FileName</th>
+            <th class="py-2 px-4">Author</th>
+            <th class="py-2 px-4">Date published</th>
+            <th class="py-2 px-4"></th>
+            <th class="py-2 px-4"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="storedFile : ${storedFiles}" class="even:bg-gray-50 odd:bg-white">
+            <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
+            <td class="py-2 px-4" th:text="${storedFile.id}" style="text-align: center;"></td>
+            <td class="py-2 px-4" th:text="${storedFile.fileName}" style="text-align: center;"></td>
+            <td class="py-2 px-4" th:text="${storedFile.author}" style="text-align: center;"></td>
+            <td class="py-2 px-4" th:text="${storedFile.getDatePublishedAsString()}" style="text-align: center;"></td>
+            <form th:action="@{/home/downloadFile}" th:method="get">
+                <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
+                <td class="py-2 px-4" style="text-align: center;">
+                    <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 focus:outline-none" type="submit">Download</button>
+                </td>
+            </form>
+            <form th:action="@{/home/privateUploads/dropAccess}" th:method="get">
+                <input type="hidden" name="storedFileID" th:value="${storedFile.id}" />
+                <td class="py-2 px-4" style="text-align: center;">
+                    <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none" type="submit">Drop access</button>
+                </td>
+            </form>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

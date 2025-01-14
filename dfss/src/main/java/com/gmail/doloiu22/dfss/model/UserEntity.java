@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter @Setter
 @Entity
 @Table(name="users")
@@ -26,5 +28,8 @@ public class UserEntity {
 
     @Transient
     private String repeatPassword;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserStoredFileAccessEntity> userStoredFiles;
 
 }

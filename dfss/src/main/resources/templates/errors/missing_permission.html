@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>DFSS: Missing Permission</title>
+  <meta name="description" content="">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .body-bg {
+      background-color: red;
+      background-image: linear-gradient(315deg, red 12%, #d2222e 74%);
+    }
+  </style>
+</head>
+<body class="body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0" style="font-family:'Lato',sans-serif;">
+<header class="max-w-lg mx-auto">
+  <a href="#">
+    <h1 class="text-4xl font-bold text-white text-center">Missing Permissions</h1>
+  </a>
+</header>
+
+<main class="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
+  <section>
+    <h3 class="font-bold text-2xl max-w-lg mx-auto text-center mt-12 mb-6">We failed to open this page for you!</h3>
+    <p class="text-gray-600 pt-2 max-w-lg mx-auto text-center mt-12 mb-6">You do not have enough permissions!</p>
+  </section>
+
+  <section class="mt-10">
+    <div class="max-w-lg mx-auto text-center mt-12 mb-6">
+      <a th:href="@{/home}" class="font-bold text-2xl text-red-600 hover:text-red-700 hover:underline mb-6">Return home?</a>
+    </div>
+  </section>
+</main>
+
+<div class="max-w-lg mx-auto text-center mt-12 mb-6">
+  <p class="text-white">Need further help? <a href="#" class="font-bold hover:underline">Email us at example@email.com</a>.</p>
+</div>
+</body>
+</html>

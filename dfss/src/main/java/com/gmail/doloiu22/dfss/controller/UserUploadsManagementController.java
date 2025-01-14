@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,7 +53,7 @@ public class UserUploadsManagementController {
     }
 
     @PostMapping("/uploadFile")
-    public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
+    public String handleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
         try {
             File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
             file.transferTo(convFile);
@@ -85,11 +84,10 @@ public class UserUploadsManagementController {
             storedFileService.addFile(storedFileEntity);
 
             convFile.delete();
-
-            return response;
+            return "redirect:/uploads";
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during file upload: " + e.getMessage());
+            return "errors/upload_failed";
         }
 
     }
@@ -99,11 +97,11 @@ public class UserUploadsManagementController {
 
         Optional<StoredFileEntity> storedFile = storedFileService.findByID(fileID);
         if (storedFile.isEmpty())
-            return "error"; // TODO: Change error; file does not exist;
+            return "errors/file_does_not_exist";
         String fileName = storedFile.get().getFileName();
 
         if (!validationsUtil.isUserTheAuthor(userName, storedFile.get()))
-            return "error"; // TODO: Change error; user is not the author;
+            return "errors/missing_permission";
 
         try {
             RestTemplate restTemplate = new RestTemplate();

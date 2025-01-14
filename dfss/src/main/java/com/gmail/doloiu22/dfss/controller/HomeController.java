@@ -2,6 +2,8 @@ package com.gmail.doloiu22.dfss.controller;
 
 import com.gmail.doloiu22.dfss.model.StoredFileEntity;
 import com.gmail.doloiu22.dfss.service.StoredFileService;
+import com.gmail.doloiu22.dfss.service.UserService;
+import com.gmail.doloiu22.dfss.service.UserStoredFileAccessService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -30,6 +32,10 @@ public class HomeController {
 
     @Autowired
     private StoredFileService storedFileService;
+    @Autowired
+    private UserStoredFileAccessService userStoredFileAccessService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public String open(Model model, Authentication authentication){
@@ -40,6 +46,17 @@ public class HomeController {
         userName = authentication.getName();
 
         return "home/dashboard";
+    }
+
+    @GetMapping("/privateUploads")
+    public String openPrivateUploads(Model model, Authentication authentication){
+
+        List<StoredFileEntity> listOfStoredFiles = userStoredFileAccessService.findAllFilesForUserAccess(userService.findByUsername(authentication.getName()).get());
+
+        model.addAttribute("storedFiles", listOfStoredFiles);
+        userName = authentication.getName();
+
+        return "home/private_uploads";
     }
 
     @GetMapping("/downloadFile")

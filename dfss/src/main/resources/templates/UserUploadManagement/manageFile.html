@@ -55,7 +55,7 @@
         <h1 class="form-title">Enter the username of the user you would like to give access to:</h1>
         <form th:method="post" th:action="@{/uploads/manageFileAccess/allowAccess}" enctype="multipart/form-data">
             <div class="mb-4">
-                <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="text" name="text" placeholder="Username to allow access" />
+                <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" type="text" name="submittedUsername" placeholder="Username to allow access" />
             </div>
             <button class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none" type="submit">Submit</button>
         </form>
@@ -76,7 +76,7 @@
                 <td class="py-2 px-4" th:text="${user.id}"></td>
                 <td class="py-2 px-4" th:text="${user.username}"></td>
                 <td class="py-2 px-4">
-                    <form th:action="@{/uploads/manageFileAccess/revokeAccess}" th:method="get">
+                    <form th:action="@{/uploads/manageFileAccess/revokeAccess}" th:method="delete">
                         <input type="hidden" name="userID" th:value="${user.id}" />
                         <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none" type="submit">Revoke Access</button>
                     </form>

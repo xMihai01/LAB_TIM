@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 @Getter @Setter
 @Entity
@@ -34,6 +35,9 @@ public class StoredFileEntity {
     @Basic
     @Column(name = "location")
     private String location;
+
+    @OneToMany(mappedBy = "storedFile", cascade = CascadeType.ALL)
+    private Set<UserStoredFileAccessEntity> userStoredFiles;
 
     public String getDatePublishedAsString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
